@@ -1,40 +1,45 @@
 import prisma from '../config/db.js';
+import { verifyAccessToken } from '../utils/token.utils.js';
 
 export const protect = async (req, res, next) => {
   try {
-    const sessionId = req.cookies?.sessionId;
+    const accessToken = req.cookies?.accessToken;
 
-    if (!sessionId) {
+    if (!accessToken) {
       return res.status(401).json({
         status: 'fail',
-        message: 'Authentication failed. Please log in to access this resource.',
+        message: 'Access token missing. Please log in.',
       });
     }
 
-    // In a full JWT setup, you would verify the JWT here. 
-    // For this robust architecture, we match the userId or session token stored in the database.
+    let decoded;
+    try {
+      decoded = verifyAccessToken(accessToken);
+    } catch (err) {
+      return res.status(401).json({
+        status: 'fail',
+        message: 'Access token expired or invalid.',
+      });
+    }
+
     const user = await prisma.user.findUnique({
-      where: { id: sessionId },
+      where: { id: decoded.id },
       select: {
         id: true,
         name: true,
         email: true,
         phoneNumber: true,
-        address: true,
         role: true,
-        isVerified: true,
       },
     });
 
     if (!user) {
-      res.clearCookie('sessionId');
       return res.status(401).json({
         status: 'fail',
-        message: 'User session is invalid or expired. Please log in again.',
+        message: 'User belonging to this token no longer exists.',
       });
     }
 
-    // Attach user profile to request object
     req.user = user;
     next();
   } catch (error) {

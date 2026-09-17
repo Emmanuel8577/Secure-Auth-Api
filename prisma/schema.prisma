@@ -13,20 +13,18 @@ enum Role {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  name        String
-  email       String   @unique
-  phoneNumber String   @unique
-  address     String?
-  password    String
-  role        Role     @default(USER)
-  isVerified  Boolean  @default(false)
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  phoneNumber  String   @unique
+  address      String?
+  password     String
+  role         Role     @default(USER)
+  refreshToken String?  // Stores active refresh token
+  isVerified   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Indexes for high-performance authentication lookups
   @@index([email])
   @@index([phoneNumber])
-  @@map("users")
 }

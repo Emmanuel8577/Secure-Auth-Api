@@ -1,22 +1,24 @@
-export const getAuthCookieOptions = () => {
-  const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === 'production';
 
-  return {
-    httpOnly: true, // Prevents access via client-side JavaScript (XSS defense)
-    secure: isProduction, // Transmitted only over HTTPS in production
-    sameSite: 'strict', // Protects against CSRF attacks
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-    path: '/',
-  };
-};
+export const getAccessTokenCookieOptions = () => ({
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: 'strict',
+  maxAge: 15 * 60 * 1000, // 15 minutes
+  path: '/',
+});
 
-export const getClearCookieOptions = () => {
-  const isProduction = process.env.NODE_ENV === 'production';
+export const getRefreshTokenCookieOptions = () => ({
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: 'strict',
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  path: '/api/v1/auth/refresh', // Restricted to refresh endpoint
+});
 
-  return {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: 'strict',
-    path: '/',
-  };
-};
+export const getClearCookieOptions = () => ({
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: 'strict',
+  path: '/',
+});
