@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger.js';
 import authRoutes from './routes/auth.routes.js';
+import { startKeepAlive } from './utils/keepAlive.js';
 
 dotenv.config();
 
