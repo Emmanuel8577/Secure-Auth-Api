@@ -41,11 +41,21 @@ app.use((err, req, res, next) => {
   });
 });
 
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+
 if (process.env.NODE_ENV !== 'test') {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    console.log(`Swagger docs available at http://localhost:${PORT}/api-docs`);
+    
+    // Start self-pinging keep-alive only in production on Render
+    if (process.env.NODE_ENV === 'production') {
+      startKeepAlive();
+    }
   });
 }
 

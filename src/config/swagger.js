@@ -1,30 +1,21 @@
-import swaggerJSDoc from 'swagger-jsdoc';
-
-const options = {
+const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Secure Authentication API',
+      title: 'Secure Auth API',
       version: '1.0.0',
-      description: 'Production-ready authentication system built with Node.js, Express, Zod, Prisma, and PostgreSQL.',
+      description: 'Production-ready Node.js Express & Prisma Auth API',
     },
     servers: [
       {
+        url: 'https://secured-auth-api.onrender.com',
+        description: 'Production Server (Render)',
+      },
+      {
         url: 'http://localhost:5000',
-        description: 'Development Server',
+        description: 'Local Development Server',
       },
     ],
-    components: {
-      securitySchemes: {
-        cookieAuth: {
-          type: 'apiKey',
-          in: 'cookie',
-          name: 'sessionId',
-        },
-      },
-    },
   },
-  apis: ['./src/routes/*.js'], // Scans all route files for JSDoc tags
+  apis: ['./src/routes/*.js'],
 };
-
-export const swaggerSpec = swaggerJSDoc(options);
